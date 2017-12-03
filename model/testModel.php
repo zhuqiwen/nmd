@@ -49,7 +49,7 @@ class testModel extends Model
 	public function delete($table, $id)
 	{
 		$condition = $table . ".id = " . $id;
-		$this->db->delete($table, $condition);
+		return $this->db->delete($table, $condition);
 	}
 
 	public function import($schools_array, $degrees_array)

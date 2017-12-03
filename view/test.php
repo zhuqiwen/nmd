@@ -8,6 +8,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 	<style>
 		.file-input-container
 		{
@@ -32,7 +35,7 @@
 	<hr />
 
 	<div class="row">
-		<?php require ('guide.php'); ?>
+		<?php require ('left_column.php'); ?>
 		<?php require ('contents.php'); ?>
 	</div>
 
@@ -78,7 +81,7 @@
 				'link': link
 			};
 
-			school = '<a href=' + link + '>' + school + '</a>';
+			program = '<a href=' + link + '>' + program + '</a>';
 			let row = '<tr>';
 			row += '<td>' + program + '</td>';
 			row += '<td>' + school + '</td>';
@@ -188,7 +191,7 @@
 	}
 
 	function makeTable(data) {
-		var table = '<table class="table table-striped"> ' +
+		var table = '<table class="table table-striped table-hover"> ' +
 			'<thead> ' +
 			'<tr> ' +
 			'<th>' + '' + '</th> ' +
@@ -210,9 +213,8 @@
 			row += '<td class="col-md-1"></td>';
 			row += '<td class="col-md-5">' + program + '</td>';
 			row += '<td class="col-md-4">' + school + '</td>';
-			row += '<td class="col-md-2">' + "<button type='button' class='btn btn-info btn-sm'>DELETE</button>" + '</td>';
+			row += '<td class="col-md-2">' + "<button id='button-delete' type='button' class='btn btn-info btn-sm'>DELETE</button>" + '</td>';
 			row += '</tr>';
-
 			table += row;
 		});
 
@@ -224,6 +226,28 @@
 		let table = makeTable(data);
 		$('#div-list').html(table);
 	}
+
+	function deleteOne(id) {
+		$.ajax({
+			url: 'index.php?controller=test&action=delete',
+			type: 'DELETE',
+			data: {id:id},
+			contentType:'application/json',
+			dataType: 'text',
+			success: function(response) {
+				console.log(response);
+				toastr.success('Record Deleted', 'Miracle Max Says');
+				location.reload();
+			},
+			error: function (xhr, ajaxOptions, thrownError) {
+				var e = window.open();
+				e.document.write(xhr.responseText);
+
+			}
+		});
+
+	}
+
 
 	$(document).ready(function () {
 		showTable(programs);
@@ -250,9 +274,10 @@
 	});
 
 	$(document).on('dblclick', '.parent-row', function () {
-		var id = $(this).data('id');
+		let id = $(this).data('id');
+		console.log(id);
 
-		var program = $.map(programs, function (item, key) {
+		let program = $.map(programs, function (item, key) {
 			if(item.id == id)
 			{
 				return item;
@@ -260,7 +285,7 @@
 		});
 
 		program = program[0];
-		var key_array = ['name', 'link', 'bp', 'mp', 'dp', 'id'];
+		let key_array = ['name', 'link', 'bp', 'mp', 'dp', 'id'];
 		$.each(key_array, function (k, v) {
 			let id = '#input-' + v;
 			let val = program[v];
@@ -274,6 +299,12 @@
 	$(document).on('submit', '#form-search', function (e) {
 		e.preventDefault();
 		search($(this).serialize());
+	});
+
+	$(document).on('submit', '#form-delete', function (e) {
+		e.preventDefault();
+		let id = $(this).find('input[type="hidden"]').val();
+		deleteOne(id);
 	});
 
 	$(document).on('change', '.filter-condition', function () {
@@ -291,10 +322,37 @@
 	$(document).on('click', '#input_filter_reset', function (e) {
 		e.preventDefault();
 		location.reload();
+	});
+
+	$(document).on('click', '#button-delete', function () {
+		let tr = $(this).closest('tr'),
+			id = tr.data('id');
+
+		let program = $.map(programs, function (item, key) {
+			if(item.id == id)
+			{
+				return item;
+			}
+		});
+
+		program = program[0];
+		console.log(program);
+
+
+		let key_array = ['name', 'link', 'bp', 'mp', 'dp', 'id'];
+		$.each(key_array, function (k, v) {
+			let id = '#input-' + v;
+			let val = program[v];
+			$('#form-delete').find(id).val(val);
+		});
+		$('#form-delete').find('#select-school').val(program.school_id);
+		$('#modal-delete').modal('show');
+
+	});
+
+	$(document).on('change', '#input-xml-file-loader', function () {
+		$('#input-xml-preview').removeAttr('disabled');
 	})
-
-
-
 
 </script>
 

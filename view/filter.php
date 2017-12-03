@@ -30,6 +30,4 @@
 			<input type="reset" class="btn btn-default form-control" id="input_filter_reset" value="Reset" />
 		</div>
 	</form>
-
-
 </div>

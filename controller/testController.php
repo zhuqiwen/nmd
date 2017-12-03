@@ -57,12 +57,6 @@ class testController extends Controller
 	{
 		parse_str(file_get_contents("php://input"),$putData);
 		echo json_encode($this->model->update('degrees', $putData));
-
-	}
-
-	public function delete($id)
-	{
-		$this->model->delete('degrees', $id);
 	}
 
 	public function handleFileUpload()
@@ -118,6 +112,14 @@ class testController extends Controller
 			['degrees, schools']
 		));
 
+	}
+
+	public function delete()
+	{
+		parse_str(file_get_contents("php://input"),$deleteData);
+
+		$id = $deleteData['id'];
+		echo $this->model->delete('degrees', $id);
 	}
 
 	private function getTextSearchCondition($incoming)

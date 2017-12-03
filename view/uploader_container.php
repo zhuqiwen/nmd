@@ -4,8 +4,8 @@
 		<div class="file-input-wrapper">
 			<form id="form-xml-upload" enctype="multipart/form-data">
 				<label for="file">Select XML file：</label>
-				<input type="file" name="xml_data" accept="text/xml">
-				<input type="submit" name="submit" value="Preview" class="btn btn-primary">
+				<input type="file" name="xml_data" id="input-xml-file-loader" accept="text/xml">
+				<input type="submit" name="submit" id="input-xml-preview" value="Preview" class="btn btn-primary" disabled="disabled">
 			</form>
 		</div>
 	</div>
