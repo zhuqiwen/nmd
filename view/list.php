@@ -1,32 +1,4 @@
 <div id="div-list">
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>&nbsp</th>
-				<th>Program</th>
-				<th>School</th>
-				<th>Delete</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-			foreach ($programs as $program)
-			{
-				$id = $program['id'];
-				$name = $program['name'];
-				$school = $program['school'];
-				$link = $program['link'];
-				echo "<tr data-id='$id' class='parent-row'>";
-				echo "<td class='col-md-1'>&nbsp</td>";
-				echo "<td class='col-md-5'><a href='$link'>$name</a></td>";
-				echo "<td class='col-md-4'>$school</td>";
-				echo "<td class='col-md-2'><button type='button' class='btn btn-info btn-sm'>DELETE</button></td>";
-				echo '<tr>';
-			}
-			?>
-
-		</tbody>
-	</table>
 </div>
 
 

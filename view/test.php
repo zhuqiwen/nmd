@@ -44,8 +44,8 @@
 
 	var json_to_server = {};
 	var programs = <?php echo json_encode($programs) ?>;
-	$('#button-import-to-database').attr("disabled","disabled");
 
+	$('#button-import-to-database').attr("disabled","disabled");
 
 	function makePreviewTable(json_data) {
 		var table = '<table class="table table-striped"> ' +
@@ -121,7 +121,6 @@
 			dataType: 'text',
 			data: {},
 			success: function (response) {
-				console.log(response);
 				alert('wiped');
 				location.reload();
 			},
@@ -171,18 +170,14 @@
 	}
 
 	function search(data) {
-		console.log(data);
 		$.ajax({
 			type: 'GET',
 			url: 'index.php?controller=test&action=search',
 			dataType: 'json',
 			data: data,
 			success: function (response) {
-				console.log(response);
-				let table = makeTable(response);
-				$('#div-list').html(table);
-
-//				location.reload();
+				programs = response;
+				showTable(programs);
 			},
 			error: function (xhr, ajaxOptions, thrownError) {
 				var e = window.open();
@@ -192,7 +187,7 @@
 		});
 	}
 
-	function makeTable(data_array) {
+	function makeTable(data) {
 		var table = '<table class="table table-striped"> ' +
 			'<thead> ' +
 			'<tr> ' +
@@ -204,7 +199,7 @@
 			'</thead> ' +
 			'<tbody>';
 
-		$.each(data_array, function (i, object) {
+		$.each(data, function (i, object) {
 			let program = object.name;
 			let school = object.school;
 			let link = object.link;
@@ -225,6 +220,14 @@
 		return table;
 	}
 
+	function showTable(data) {
+		let table = makeTable(data);
+		$('#div-list').html(table);
+	}
+
+	$(document).ready(function () {
+		showTable(programs);
+	});
 
 	$(document).on('click', '#button-wipe-database', function () {
 		wipeDB();
@@ -257,7 +260,6 @@
 		});
 
 		program = program[0];
-
 		var key_array = ['name', 'link', 'bp', 'mp', 'dp', 'id'];
 		$.each(key_array, function (k, v) {
 			let id = '#input-' + v;
@@ -272,6 +274,23 @@
 	$(document).on('submit', '#form-search', function (e) {
 		e.preventDefault();
 		search($(this).serialize());
+	});
+
+	$(document).on('change', '.filter-condition', function () {
+		let form = $(this).parents('#form-filter'),
+			school_id = form.find('#select_school').val(),
+			academic_level = form.find('#select_academic_level').val();
+
+		let filtered = programs.filter(function (item) {
+			return (item[academic_level] != null) && (item.school_id == school_id);
+		});
+
+		showTable(filtered);
+	});
+
+	$(document).on('click', '#input_filter_reset', function (e) {
+		e.preventDefault();
+		location.reload();
 	})
 
 

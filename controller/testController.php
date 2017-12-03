@@ -53,7 +53,6 @@ class testController extends Controller
 		$this->showView('test', $data);
 	}
 
-
 	public function update()
 	{
 		parse_str(file_get_contents("php://input"),$putData);
@@ -109,8 +108,63 @@ class testController extends Controller
 
 	public function search()
 	{
-		$q = $_GET['q'];
-		echo json_encode($this->model->search($q, $this->all_text_columns, ['degrees, schools']));
+		$incoming = $_GET;
+		unset($incoming['controller']);
+		unset($incoming['action']);
+		$condition_columns = $this->getTextSearchCondition($incoming);
+		echo json_encode($this->model->search(
+			$condition_columns['conditions'],
+			$condition_columns['columns_to_return'],
+			['degrees, schools']
+		));
+
+	}
+
+	private function getTextSearchCondition($incoming)
+	{
+		$q = array_pop($incoming);
+		$conditions = '';
+		$columns = $this->all_text_columns;
+		$cnt = sizeof($columns);
+		foreach ($columns as $column)
+		{
+			$conditions .= "$column LIKE '%$q%'";
+			if($cnt != 1)
+			{
+				$conditions .= ' OR ';
+			}
+			else
+			{
+				$conditions .= '';
+			}
+			$cnt --;
+		}
+		$columns_to_return = $this->getColumnsToReturn($this->all_text_columns);
+
+		return compact('conditions', 'columns_to_return');
+	}
+
+	private function getColumnsToReturn($all_text_columns)
+	{
+		$columns = $all_text_columns;
+		$columns_to_return = '';
+		$cnt = sizeof($columns);
+		foreach ($columns as $column)
+		{
+			$columns_to_return .= " $column";
+
+			if($cnt != 1)
+			{
+				$columns_to_return .= ', ';
+			}
+			else
+			{
+				$columns_to_return .= '';
+			}
+			$cnt --;
+		}
+
+		return $columns_to_return;
 	}
 
 }

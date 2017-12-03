@@ -1,9 +1,8 @@
 <div id="div-filter">
-	<form>
+	<form id="form-filter">
 		<div class="form-group col-md-5 col-sm-12">
 			<label for="input_school">School</label>
-
-			<select class="form-control" id="select_school" name="school_id">
+			<select class="form-control filter-condition" id="select_school" name="school_id">
 				<?php
 				foreach ($schools as $school)
 				{
@@ -17,7 +16,7 @@
 		</div>
 		<div class="form-group col-md-5 col-sm-12">
 			<label for="input_academic_level">Academic Level</label>
-			<select class="form-control" id="input_academic_level">
+			<select class="form-control filter-condition" id="select_academic_level" name="academic_level">
 				<?php
 				foreach ($academic_levels as $key => $level)
 				{
@@ -28,7 +27,7 @@
 		</div>
 		<div class="form-group col-md-2 col-sm-12 pull-right">
 			<label for="input_filter_submit">&nbsp</label>
-			<input type="submit" class="btn btn-default form-control" id="input_filter_submit" value="Apply" />
+			<input type="reset" class="btn btn-default form-control" id="input_filter_reset" value="Reset" />
 		</div>
 	</form>
 

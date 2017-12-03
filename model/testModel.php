@@ -5,8 +5,6 @@
 
 class testModel extends Model
 {
-
-
 	public function getAll($table)
 	{
 		$this->db->all($table);
@@ -19,7 +17,6 @@ class testModel extends Model
 		return $this->db->fetch_all_assoc();
 
 	}
-
 
 	public function update($table, $record = [])
 	{
@@ -55,8 +52,6 @@ class testModel extends Model
 		$this->db->delete($table, $condition);
 	}
 
-
-
 	public function import($schools_array, $degrees_array)
 	{
 
@@ -69,7 +64,6 @@ class testModel extends Model
 
 
 	}
-
 
 	private function importSchools($schools_array)
 	{
@@ -111,6 +105,23 @@ class testModel extends Model
 			$bp = $degree['bp'];
 			$mp = $degree['mp'];
 			$dp = $degree['dp'];
+
+			if($bp == '')
+			{
+				$bp =NULL;
+			}
+
+			if($mp == '')
+			{
+				$mp =NULL;
+			}
+
+			if($dp == '')
+			{
+				$dp =NULL;
+			}
+
+
 			$statement->execute();
 		}
 		$statement->close();
@@ -128,37 +139,12 @@ class testModel extends Model
 		return $this->db->fetch_columns($table);
 	}
 
-	public function search($q, $columns = [], $tables = [])
+	public function search($conditions, $columns_to_return = [], $tables = [])
 	{
-		$query = '';
-		$columns_to_return = '';
-		$cnt = sizeof($columns);
-		foreach ($columns as $column)
-		{
-			$query .= "$column LIKE '%$q%'";
-			$columns_to_return .= " $column";
-
-			if($cnt != 1)
-			{
-				$query .= ' OR ';
-				$columns_to_return .= ', ';
-			}
-			else
-			{
-				$query .= '';
-				$columns_to_return .= '';
-			}
-			$cnt --;
-		}
-
-
-		// This is ugly.......but time is running out!
-		$query = "SELECT degrees.id, $columns_to_return FROM degrees JOIN schools ON degrees.school_id = schools.id WHERE $query";
-
+		// I know this is ugly and sorry!
+		$query = "SELECT degrees.id, degrees.school_id, $columns_to_return FROM degrees JOIN schools ON degrees.school_id = schools.id WHERE $conditions";
 
 		$this->db->query($query);
 		return $this->db->fetch_all_assoc();
-
-
 	}
 }
