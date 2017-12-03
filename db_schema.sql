@@ -1,0 +1,26 @@
+CREATE DATABASE IF NOT EXISTS  nmd_code_challenge;
+
+CREATE TABLE IF NOT EXISTS schools
+(
+  id INTEGER AUTO_INCREMENT PRIMARY KEY ,
+  school VARCHAR(255) UNIQUE
+)ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS degrees
+(
+  id INTEGER AUTO_INCREMENT PRIMARY KEY ,
+  name VARCHAR(255),
+  school_id INTEGER,
+  link VARCHAR(255),
+  bp VARCHAR(30),
+  mp VARCHAR(30),
+  dp VARCHAR(30)
+)ENGINE=INNODB;
+
+
+ALTER TABLE degrees ADD CONSTRAINT
+  fk_degrees_schools FOREIGN KEY (school_id)
+REFERENCES schools(id) ON DELETE CASCADE;
+
+ALTER TABLE degrees ADD CONSTRAINT
+  uk_degrees UNIQUE KEY  (name, school_id, link, bp, mp, dp);
